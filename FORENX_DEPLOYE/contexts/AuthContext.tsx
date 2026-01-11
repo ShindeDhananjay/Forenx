@@ -4,6 +4,7 @@ import { dbService } from '../services/dbService';
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  isLoading: boolean; // Add isLoading to the context type
   user: string | null;
   login: () => void;
   logout: () => void;
@@ -14,33 +15,65 @@ interface AuthContextType {
   hasNewLinks: boolean;
   notifyNewLinksFound: () => void;
   clearNewLinksNotification: () => void;
+  isApiKeyModalOpen: boolean;
+  openApiKeyModal: () => void;
+  closeApiKeyModal: () => void;
+  saveCustomApiKey: (key: string) => void;
+  clearCustomApiKey: () => void;
+  activeApiKeyType: 'default' | 'custom';
+  isDefaultKeyMissing: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>(null!);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start in a loading state
   const [user, setUser] = useState<string | null>(null);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
   const [hasNewLinks, setHasNewLinks] = useState(false);
   const location = useLocation();
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [activeApiKeyType, setActiveApiKeyType] = useState<'default' | 'custom'>('default');
+  const [isDefaultKeyMissing, setIsDefaultKeyMissing] = useState(false);
+
 
   useEffect(() => {
-    // Run database seeding for demo purposes on first load
-    dbService.initializeDatabase();
-    
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' || 'dark';
-    setTheme(savedTheme);
-    document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    
-    // Check for existing auth and notifications on initial load
-    const authStatus = localStorage.getItem('auth');
-    if (authStatus) {
-        setIsAuthenticated(true);
-        setUser('Admin Officer');
-    }
-    setHasNewLinks(dbService.getHasNewLinks());
+    // Wrap initialization in a function to set loading state at the end
+    const initializeApp = () => {
+      dbService.initializeDatabase();
+      
+      const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' || 'dark';
+      setTheme(savedTheme);
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+      
+      const authStatus = localStorage.getItem('auth');
+      if (authStatus) {
+          setIsAuthenticated(true);
+          setUser('Admin Officer');
+      }
+      setHasNewLinks(dbService.getHasNewLinks());
+
+      const defaultKey = process.env.API_KEY;
+      const customKey = localStorage.getItem('custom_api_key');
+
+      if (customKey) {
+        setActiveApiKeyType('custom');
+      }
+
+      if (!defaultKey) {
+        setIsDefaultKeyMissing(true);
+        if (!customKey) {
+          setIsApiKeyModalOpen(true);
+        }
+      }
+      
+      // Crucially, set loading to false after all checks are done
+      setIsLoading(false);
+    };
+
+    initializeApp();
   }, []);
 
   // Sync selectedCaseId with the URL to keep state consistent across navigation and reloads.
@@ -84,9 +117,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dbService.setHasNewLinks(false);
   }
 
+  const openApiKeyModal = () => setIsApiKeyModalOpen(true);
+  const closeApiKeyModal = () => setIsApiKeyModalOpen(false);
+
+  const saveCustomApiKey = (key: string) => {
+    if (key) {
+      localStorage.setItem('custom_api_key', key);
+      setActiveApiKeyType('custom');
+    }
+  };
+  
+  const clearCustomApiKey = () => {
+    localStorage.removeItem('custom_api_key');
+    setActiveApiKeyType('default');
+  };
+
   return (
     <AuthContext.Provider value={{ 
-      isAuthenticated, user, login, logout, theme, toggleTheme, selectedCaseId, clearCase, hasNewLinks, notifyNewLinksFound, clearNewLinksNotification
+      isAuthenticated, isLoading, user, login, logout, theme, toggleTheme, selectedCaseId, clearCase, hasNewLinks, notifyNewLinksFound, clearNewLinksNotification,
+      isApiKeyModalOpen, openApiKeyModal, closeApiKeyModal, saveCustomApiKey, clearCustomApiKey, activeApiKeyType,
+      isDefaultKeyMissing
     }}>
       {children}
     </AuthContext.Provider>
