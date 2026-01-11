@@ -11,15 +11,20 @@ export class ApiKeyError extends Error {
 
 // Helper to get AI instance safely
 const getAI = () => {
-  // Use the default key from environment variables for deployment
-  const apiKey = process.env.API_KEY;
-  if (apiKey) {
-    return new GoogleGenAI({ apiKey: apiKey });
+  // --- TEMPORARY HARDCODED API KEY ---
+  // IMPORTANT: Replace "YOUR_API_KEY_HERE" with your actual Gemini API key.
+  // This is a temporary solution for quick deployment. For production, it's
+  // highly recommended to use environment variables to keep your key secure.
+  const apiKey = "AIzaSyBQvBG4E3bRXF0UYQoZggRoLnx5vVLwx1Q";
+
+  if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+    // If the key is still the placeholder, throw an error to remind the user.
+    throw new ApiKeyError("API key is not set. Please replace 'YOUR_API_KEY_HERE' in services/aiService.ts with your actual Gemini API key.");
   }
-  
-  // If no key is available, throw an error.
-  throw new ApiKeyError("AI service is not configured. An API key is missing.");
+
+  return new GoogleGenAI({ apiKey: apiKey });
 };
+
 
 // --- New Audio Helper Functions ---
 export function decode(base64: string): Uint8Array {
