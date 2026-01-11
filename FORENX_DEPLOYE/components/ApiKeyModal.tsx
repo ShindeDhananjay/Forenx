@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { KeyRound, X, Save, Trash2, ShieldCheck, AlertTriangle } from 'lucide-react';
 
 const ApiKeyModal: React.FC = () => {
-  const { closeApiKeyModal, saveCustomApiKey, clearCustomApiKey, activeApiKeyType } = useAuth();
+  const { closeApiKeyModal, saveCustomApiKey, clearCustomApiKey, activeApiKeyType, isDefaultKeyMissing } = useAuth();
   const [currentKey, setCurrentKey] = useState('');
+
+  useEffect(() => {
+    const storedKey = localStorage.getItem('custom_api_key');
+    if (storedKey) {
+      setCurrentKey(storedKey);
+    }
+  }, []);
 
   const handleSave = () => {
     saveCustomApiKey(currentKey);
@@ -14,6 +21,7 @@ const ApiKeyModal: React.FC = () => {
   const handleClear = () => {
     clearCustomApiKey();
     setCurrentKey(''); // Clear input field as well
+    closeApiKeyModal();
   };
 
   return (
@@ -30,6 +38,21 @@ const ApiKeyModal: React.FC = () => {
 
         {/* Body */}
         <div className="p-6 space-y-4">
+          {isDefaultKeyMissing && (
+            <div className="flex items-start space-x-3 p-4 rounded-lg border bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-500/30">
+              <AlertTriangle className="text-red-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-sm text-red-800 dark:text-red-200">
+                  Default API Key Missing
+                </h4>
+                <p className="text-xs text-red-700 dark:text-red-300 mt-1">
+                  The application's pre-configured API key was not found. Please provide your own Gemini API key below to enable AI features. You can get one from{' '}
+                  <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-red-500">Google AI Studio</a>.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className={`flex items-start space-x-3 p-3 rounded-lg border ${
             activeApiKeyType === 'custom' 
             ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-500/30' 
@@ -52,7 +75,7 @@ const ApiKeyModal: React.FC = () => {
           </div>
           
           <div>
-            <label htmlFor="apiKeyInput" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Enter Custom API Key (Backup)</label>
+            <label htmlFor="apiKeyInput" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Enter Custom API Key</label>
             <input 
               id="apiKeyInput"
               type="password"
