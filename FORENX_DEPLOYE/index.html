@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ForenX - AI Forensic Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              slate: {
+                850: '#151f32',
+                900: '#0f172a',
+                950: '#020617',
+              },
+              cyan: {
+                450: '#00a3cc',
+              }
+            },
+            keyframes: {
+              glow: {
+                '0%, 100%': { boxShadow: '0 0 5px rgba(6, 182, 212, 0.4)' },
+                '50%': { boxShadow: '0 0 20px rgba(6, 182, 212, 0.9)' },
+              },
+              'text-glow': {
+                '0%, 100%': { textShadow: '0 0 4px rgba(6, 182, 212, 0.6)' },
+                '50%': { textShadow: '0 0 12px rgba(6, 182, 212, 1)' },
+              },
+              'progress-bar-fill': {
+                '0%': { width: '0%' },
+                '100%': { width: '100%' },
+              }
+            },
+            animation: {
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'spin-slow': 'spin 3s linear infinite',
+              'glow': 'glow 2.5s ease-in-out infinite',
+              'text-glow': 'text-glow 2.5s ease-in-out infinite',
+              'progress-bar-fill': 'progress-bar-fill 5s linear infinite',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        /* Default base styles */
+        transition: background-color 0.3s, color 0.3s;
+      }
+      /* Custom scrollbar for dark theme */
+      .dark ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #1e293b; 
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569; 
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #64748b; 
+      }
+      .logo-animate {
+        filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.7));
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "pdfjs-dist": "https://esm.sh/pdfjs-dist@^5.4.530"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div id="root">
+       <!-- Loading Fallback to confirm HTML renders -->
+       <div style="height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #0f172a; color: #06b6d4; font-family: sans-serif;">
+         <div style="text-align: center;">
+           <svg style="animation: spin 1s linear infinite; height: 3rem; width: 3rem; margin: 0 auto 1rem;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+             <circle style="opacity: 0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+             <path style="opacity: 0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+           </svg>
+           <h2 style="font-size: 1.5rem; font-weight: bold;">Initializing ForenX...</h2>
+         </div>
+       </div>
+       <style>
+         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+       </style>
+    </div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

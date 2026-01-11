@@ -1,0 +1,5 @@
+{
+  "name": "ForenX",
+  "description": "AI-Powered Digital Forensic Analysis Platform analyzing forensic extractions to generate entities, timelines, and AI-driven investigative summaries.",
+  "requestFramePermissions": []
+}
