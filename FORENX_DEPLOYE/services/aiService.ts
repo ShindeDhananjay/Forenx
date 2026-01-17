@@ -15,7 +15,7 @@ const getAI = () => {
   // IMPORTANT: Replace "YOUR_API_KEY_HERE" with your actual Gemini API key.
   // This is a temporary solution for quick deployment. For production, it's
   // highly recommended to use environment variables to keep your key secure.
-  const apiKey = "AIzaSyBQvBG4E3bRXF0UYQoZggRoLnx5vVLwx1Q";
+  const apiKey = "YOUR_API_KEY_HERE";
 
   if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
     // If the key is still the placeholder, throw an error to remind the user.
