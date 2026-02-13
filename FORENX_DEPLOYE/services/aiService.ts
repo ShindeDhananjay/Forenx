@@ -17,6 +17,9 @@ const getAI = () => {
   // highly recommended to use environment variables to keep your key secure.
   const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
+  console.log("API Key found:", API_KEY ? "YES" : "NO");
+  console.log("API Key length:", API_KEY?.length);
+
   if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
     // If the key is still the placeholder, throw an error to remind the user.
     throw new ApiKeyError("API key is not set. Please replace 'YOUR_API_KEY_HERE' in services/aiService.ts with your actual Gemini API key.");
